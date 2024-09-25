@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Character : MonoBehaviour
 {
@@ -17,16 +18,27 @@ public class Character : MonoBehaviour
     [SerializeField]
     float laneChangeSpeed;
 
+
     // Start is called before the first frame update
     void Start()
     {
+
         curLane = (MAX_LANE + 1) / 2;
         centerOffset = curLane;
+
     }
+
+    
 
     // Update is called once per frame
     void Update()
     {
+        
+        if (Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0)
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+
         if (Input.GetKeyDown(KeyCode.Space)) {
 
             curLane += moveDir;
@@ -43,5 +55,7 @@ public class Character : MonoBehaviour
                                           new Vector3(destPosX, transform.position.y, transform.position.z),
                                           laneChangeSpeed * Time.deltaTime);
 
+
     }
+
 }
