@@ -14,6 +14,11 @@ public class MapManager : MonoBehaviour
     [SerializeField]
     Transform blockParent;
 
+    [SerializeField]
+    CarSpawnPosSO spawnInfoSO;
+    [SerializeField]
+    Car carPrefab;
+
     float removeDistance;
 
     List<Block> mapBlocks = new List<Block>(10);
@@ -43,12 +48,11 @@ public class MapManager : MonoBehaviour
 
         foreach (var block in mapBlocks) {
 
-            block.transform.Translate(Vector3.back * 10 * Time.fixedDeltaTime);
+            block.transform.Translate(10 * Time.fixedDeltaTime * Vector3.back);
 
         }
 
     }
-
 
 
     private void Update() {
@@ -78,6 +82,8 @@ public class MapManager : MonoBehaviour
             mapBlocks.Add(Instantiate(blockPrefab, mapBlocks[mapBlocks.Count - 1].transform.position + Vector3.forward * blockLength, Quaternion.identity, blockParent));        
         }
 
+        mapBlocks[mapBlocks.Count - 1].ResetBlock(spawnInfoSO, carPrefab);
+
         //todo : instantiate를 오브젝트 풀로부터 빌려오는걸로 전환.
 
     }
@@ -92,7 +98,7 @@ public class MapManager : MonoBehaviour
         Destroy(blockObj.gameObject);
 
         //todo : 개발 후 주석해제
-        //blockObj.ResetBlock();
+        //blockObj.ResetBlock(spawnInfoSO, carPrefab);
 
     }
 
