@@ -14,16 +14,21 @@ public class MapManager : MonoBehaviour
     [SerializeField]
     Transform blockParent;
 
+    float removeDistance;
+
     List<Block> mapBlocks = new List<Block>(10);
+    Transform oldestBlock;
 
     //초기 블록 생성.
     private void Start() {
 
-        CreateEndTile();
-        CreateEndTile();
-        CreateEndTile();
-        CreateEndTile();
-        CreateEndTile();
+        removeDistance = blockLength;
+
+        CreateNewTile();
+        CreateNewTile();
+        CreateNewTile();
+        CreateNewTile();
+        CreateNewTile();
 
     }
 
@@ -48,12 +53,12 @@ public class MapManager : MonoBehaviour
 
     private void Update() {
 
-        if (time > aliveTime) {
-            time = 0;
-            RemoveFirstTile();
-            CreateEndTile();
-        } else {
-            time += Time.deltaTime;
+        if (oldestBlock.transform.position.z <= -removeDistance) { 
+        
+            RemoveOldestTile();
+            CreateNewTile();
+            oldestBlock = mapBlocks[0].transform;
+
         }
 
     }
@@ -64,10 +69,11 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// 가장 뒤에 블록 하나 추가.
     /// </summary>
-    public void CreateEndTile() {
+    public void CreateNewTile() {
 
         if (mapBlocks.Count == 0) {
             mapBlocks.Add(Instantiate(blockPrefab, blockParent));
+            oldestBlock = mapBlocks[0].transform;
         } else {
             mapBlocks.Add(Instantiate(blockPrefab, mapBlocks[mapBlocks.Count - 1].transform.position + Vector3.forward * blockLength, Quaternion.identity, blockParent));        
         }
@@ -79,7 +85,7 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// 가장 오래된 타일 제거
     /// </summary>
-    public void RemoveFirstTile() {
+    public void RemoveOldestTile() {
 
         Block blockObj = mapBlocks[0];
         mapBlocks.RemoveAt(0);
