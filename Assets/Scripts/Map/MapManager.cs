@@ -38,11 +38,6 @@ public class MapManager : MonoBehaviour
     }
 
     #region 생성 테스트용 디버그 코드
-    float time = 0;
-
-    [Header("Debug")]
-    [SerializeField]
-    float aliveTime = 4;
 
     private void FixedUpdate() {
 
