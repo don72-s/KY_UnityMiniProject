@@ -18,6 +18,17 @@ public class Character : MonoBehaviour
     [SerializeField]
     float laneChangeSpeed;
 
+    Rigidbody rigid;
+    [SerializeField]
+    float gravityMultiplier;
+    [SerializeField]
+    float jumpPower;
+
+    private void Awake() {
+        
+        rigid = GetComponent<Rigidbody>();
+
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -25,10 +36,15 @@ public class Character : MonoBehaviour
 
         curLane = (MAX_LANE + 1) / 2;
         centerOffset = curLane;
-
+       
     }
 
-    
+
+    private void FixedUpdate() {
+        
+        rigid.AddForce(Physics.gravity * gravityMultiplier, ForceMode.Acceleration);
+
+    }
 
     // Update is called once per frame
     void Update()
@@ -49,6 +65,10 @@ public class Character : MonoBehaviour
                 moveDir *= -1;
             }
 
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow)) {
+            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
         }
 
         transform.position = Vector3.Lerp(transform.position,
