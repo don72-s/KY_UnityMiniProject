@@ -10,14 +10,10 @@ public class Block : PoolAble
     private void Awake() {
         
         carL = new List<Car>(16);
-
-    }
-
-    private void Start() {
-
         poolManager = PoolManager.GetInstance();
 
     }
+
 
     /// <summary>
     /// 블록 생성시의 초기세팅(장애물 등의 배치)
