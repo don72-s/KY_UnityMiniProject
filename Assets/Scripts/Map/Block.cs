@@ -23,10 +23,11 @@ public class Block : PoolAble
         int lines = _spawnInfo.LineCount;
         int cars = _spawnInfo.CarCount;
 
+
         for (int i = -(lines - 1); i <= lines - 1; i += 2) {
 
             int j = -(cars - 1);
-            int r = Random.Range(0, cars - 1);
+            int r = Random.Range(0, cars);
 
             for (int idx = 0; idx < cars; idx++) {
 
@@ -42,7 +43,6 @@ public class Block : PoolAble
 
         }
 
-
     }
 
     /// <summary>
@@ -57,6 +57,7 @@ public class Block : PoolAble
         }
 
         BackToPool();
+        carL.Clear();
 
     }
 
