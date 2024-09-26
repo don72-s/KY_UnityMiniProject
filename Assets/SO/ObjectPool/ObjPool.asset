@@ -15,7 +15,16 @@ MonoBehaviour:
   poolDatas:
   - prefab: {fileID: 7326143180354350449, guid: 02b996a534cd38f4998dbbd45833c609, type: 3}
     startPoolCount: 30
-    exInfo: 
+    exInfo: Car
+  - prefab: {fileID: 7326143180354350449, guid: 6347ac53f99826744965ea95849ff7de, type: 3}
+    startPoolCount: 10
+    exInfo: Truck
   - prefab: {fileID: 1090472716506374758, guid: 689bc64522cfda84f9e92f8f15724d94, type: 3}
     startPoolCount: 10
     exInfo: 
+  - prefab: {fileID: 5843359532535122548, guid: ea78922a19e43c846afcae8564948a06, type: 3}
+    startPoolCount: 2
+    exInfo: Up
+  - prefab: {fileID: 5843359532535122548, guid: 75dbe6d808bfef94ab9e96294357eb22, type: 3}
+    startPoolCount: 2
+    exInfo: Down

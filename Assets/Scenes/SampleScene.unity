@@ -343,7 +343,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 66.91428
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -368,14 +368,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.24473245, y: -0, z: -0, w: 0.9695907}
-  m_LocalPosition: {x: 0, y: 6.5, z: -7.3}
+  m_LocalRotation: {x: 0.13688855, y: -0, z: -0, w: 0.99058646}
+  m_LocalPosition: {x: 0, y: 5.47, z: -5.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 28.332, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 15.736, y: 0, z: 0}
 --- !u!1 &1015324810
 GameObject:
   m_ObjectHideFlags: 0
@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c958eaafa601af044b8213752e463f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockPrefab: {fileID: 1090472716506374758, guid: 689bc64522cfda84f9e92f8f15724d94, type: 3}
+  maps: {fileID: 507816925}
   blockLength: 30
   blockParent: {fileID: 507816925}
   spawnInfoSO: {fileID: 11400000, guid: 179e0374921fb8b43a24aabce50fea96, type: 2}

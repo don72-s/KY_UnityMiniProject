@@ -6,12 +6,17 @@ public class Block : PoolAble
 {
     PoolManager poolManager;
     List<Car> carL;
+    public Vector3 nextTileOffset { get; protected set; }
     HashSet<int> voidIdx;
+
+    [SerializeField]
+    public float heightOffset;
 
     private void Awake() {
         
         carL = new List<Car>(16);
         poolManager = PoolManager.GetInstance();
+        nextTileOffset = Vector3.zero;
 
     }
 
@@ -19,7 +24,7 @@ public class Block : PoolAble
     /// <summary>
     /// 블록 생성시의 초기세팅(장애물 등의 배치)
     /// </summary>
-    public void SettingBlock(CarSpawnPosSO _spawnInfo) {
+    public virtual void SettingBlock(CarSpawnPosSO _spawnInfo) {
 
         int lines = _spawnInfo.LineCount;
         int cars = _spawnInfo.CarCount;
