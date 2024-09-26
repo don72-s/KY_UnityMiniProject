@@ -6,6 +6,7 @@ public class Block : PoolAble
 {
     PoolManager poolManager;
     List<Car> carL;
+    HashSet<int> voidIdx;
 
     private void Awake() {
         
@@ -28,18 +29,23 @@ public class Block : PoolAble
 
             int j = -(cars - 1);
             int r = Random.Range(0, cars);
+            HashSet<int> set = new HashSet<int>();
 
-            for (int idx = 0; idx < cars; idx++) {
+            while (set.Count < r) {
+                set.Add(Random.Range(0, cars));
+            }
 
-                if (r != idx) {
-                    Car c = poolManager.GetObj<Car>();
-                    c.transform.SetPositionAndRotation(transform.position + new Vector3(j * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
-                    c.transform.SetParent(transform);
-                    carL.Add(c);
-                }
-                j += 2;
+
+            foreach (int val in set) { 
+            
+                Car c = poolManager.GetObj<Car>(Random.Range(0, 2) == 0 ? "Car" : "Truck");
+                c.transform.SetPositionAndRotation(transform.position + new Vector3((j + 2 * val) * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
+                c.transform.SetParent(transform);
+                carL.Add(c);
 
             }
+
+
 
         }
 
