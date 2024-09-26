@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
+
+    PoolManager poolManager;
    
     //todo : 여러 종류의 맵을 so등으로 가지고있기.
     [SerializeField]
@@ -16,8 +19,6 @@ public class MapManager : MonoBehaviour
 
     [SerializeField]
     CarSpawnPosSO spawnInfoSO;
-    [SerializeField]
-    Car carPrefab;
 
     float removeDistance;
 
@@ -26,6 +27,8 @@ public class MapManager : MonoBehaviour
 
     //초기 블록 생성.
     private void Start() {
+
+        poolManager = PoolManager.GetInstance();
 
         removeDistance = blockLength;
 
@@ -71,15 +74,19 @@ public class MapManager : MonoBehaviour
     public void CreateNewTile() {
 
         if (mapBlocks.Count == 0) {
-            mapBlocks.Add(Instantiate(blockPrefab, blockParent));
+            mapBlocks.Add(poolManager.GetObj<Block>());
+            mapBlocks[0].transform.SetParent(blockParent);
+            mapBlocks[0].transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
             oldestBlock = mapBlocks[0].transform;
         } else {
-            mapBlocks.Add(Instantiate(blockPrefab, mapBlocks[mapBlocks.Count - 1].transform.position + Vector3.forward * blockLength, Quaternion.identity, blockParent));        
+
+            Block tmp = poolManager.GetObj<Block>();
+            tmp.transform.SetPositionAndRotation(mapBlocks[mapBlocks.Count - 1].transform.position + Vector3.forward * blockLength, Quaternion.identity);
+            tmp.transform.SetParent(blockParent);
+            mapBlocks.Add(tmp);
         }
 
-        mapBlocks[mapBlocks.Count - 1].ResetBlock(spawnInfoSO, carPrefab);
-
-        //todo : instantiate를 오브젝트 풀로부터 빌려오는걸로 전환.
+        mapBlocks[mapBlocks.Count - 1].SettingBlock(spawnInfoSO);
 
     }
 
@@ -90,10 +97,8 @@ public class MapManager : MonoBehaviour
 
         Block blockObj = mapBlocks[0];
         mapBlocks.RemoveAt(0);
-        Destroy(blockObj.gameObject);
 
-        //todo : 개발 후 주석해제
-        //blockObj.ResetBlock(spawnInfoSO, carPrefab);
+        blockObj.RemoveBlock();
 
     }
 

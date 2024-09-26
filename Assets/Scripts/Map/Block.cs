@@ -2,18 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block : MonoBehaviour
+public class Block : PoolAble
 {
-    //todo : 기능개발
+    PoolManager poolManager;
+    List<Car> carL;
+
+    private void Awake() {
+        
+        carL = new List<Car>(16);
+
+    }
+
+    private void Start() {
+
+        poolManager = PoolManager.GetInstance();
+
+    }
+
     /// <summary>
-    /// 블록을 숨기고 장애물 정보등을 리셋하고 오브젝트풀에 저장
+    /// 블록 생성시의 초기세팅(장애물 등의 배치)
     /// </summary>
-    public void ResetBlock(CarSpawnPosSO _spawnInfo, Car _carPrefab) {
+    public void SettingBlock(CarSpawnPosSO _spawnInfo) {
 
-        int lines = _spawnInfo.LineCount;//홀수, 짝수 다름
-        int cars = _spawnInfo.CarCount;//홀수, 짝수 다름
-
-
+        int lines = _spawnInfo.LineCount;
+        int cars = _spawnInfo.CarCount;
 
         for (int i = -(lines - 1); i <= lines - 1; i += 2) {
 
@@ -23,8 +35,10 @@ public class Block : MonoBehaviour
             for (int idx = 0; idx < cars; idx++) {
 
                 if (r != idx) {
-                    Car c = Instantiate(_carPrefab, transform.position + new Vector3(j * _spawnInfo.HorizontalOffset, _carPrefab.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
+                    Car c = poolManager.GetObj<Car>();
+                    c.transform.SetPositionAndRotation(transform.position + new Vector3(j * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
                     c.transform.SetParent(transform);
+                    carL.Add(c);
                 }
                 j += 2;
 
@@ -32,6 +46,21 @@ public class Block : MonoBehaviour
 
         }
 
+
+    }
+
+    /// <summary>
+    /// 블록과 배치된 장애물 등의 요소들을 풀로 반환.
+    /// </summary>
+    public void RemoveBlock() {
+
+        foreach (Car car in carL) { 
+        
+            car.BackToPool();
+
+        }
+
+        BackToPool();
 
     }
 
