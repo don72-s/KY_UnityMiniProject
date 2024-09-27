@@ -45,15 +45,14 @@ public class MapManager : MonoBehaviour {
 
         CreateEmptyFlatTile();
         CreateEmptyFlatTile();
-        CreateRandomTile();
-        CreateRandomTile();
-        CreateRandomTile();
-        CreateRandomTile();
-        CreateRandomTile();
-        CreateRandomTile();
-        CreateRandomTile();
-        CreateRandomTile();
 
+        while (mapBlocks.Count < maxBlockCnt) { 
+        
+            CreateRandomTile();
+
+        }
+
+        curSpeed = speed;
 
     }
 
@@ -61,7 +60,7 @@ public class MapManager : MonoBehaviour {
 
         foreach (var block in mapBlocks) {
 
-            block.transform.Translate(30 * Time.deltaTime * Vector3.back, Space.World);
+            block.transform.Translate(curSpeed * Time.deltaTime * Vector3.back, Space.World);
 
         }
 
@@ -69,6 +68,13 @@ public class MapManager : MonoBehaviour {
 
     bool is3DMode = true;
     int createCnt = 0;
+    int maxCreateCnt = 10;
+    bool isMaking3DBlock = true;
+    int maxBlockCnt = 15;
+
+    [SerializeField]
+    int speed = 30;
+    int curSpeed;
 
     IEnumerator ChangeCountCoroutine() {
 
@@ -79,6 +85,17 @@ public class MapManager : MonoBehaviour {
         Debug.Log("1");
         yield return new WaitForSeconds(0.4f);
         GameManager.GetInstance().ChangeViewMode();
+
+        if (is3DMode)
+            curSpeed = speed;
+        else
+            curSpeed = 18;
+
+        foreach (var block in mapBlocks) {
+
+            block.SetRightObjectVisivle(is3DMode);
+
+        }
 
     }
 
@@ -118,7 +135,13 @@ public class MapManager : MonoBehaviour {
 
             }
 
-            if (createCnt < 5) {
+            if (mapBlocks.Count >= maxBlockCnt) {
+                
+                return;
+            }
+
+
+            if (createCnt < maxCreateCnt) {
 
                 CreateRandomTile();
                 createCnt++;
@@ -128,6 +151,8 @@ public class MapManager : MonoBehaviour {
                 CreateSwapTile();
                 CreateEmptyFlatTile();
                 createCnt = 0;
+                maxCreateCnt = isMaking3DBlock ? 4 : 7;
+                isMaking3DBlock = !isMaking3DBlock;
 
             }
 
@@ -180,10 +205,12 @@ public class MapManager : MonoBehaviour {
 
         }
 
+        _block.SetRightObjectVisivle();
+
     }
     void SetupObstacle(Block _block) { 
     
-        _block.SettingBlock(spawnInfoSO);
+        _block.SettingBlock(spawnInfoSO, isMaking3DBlock);
 
     }
 

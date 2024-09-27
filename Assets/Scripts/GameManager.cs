@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
 
         speedControlCoroutine = StartCoroutine(SpeedControlCoroutine());
 
-        vCam.m_Lens.OrthographicSize = 20;
+        vCam.m_Lens.OrthographicSize = 8;
         Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time = 0.2f;
 
     }

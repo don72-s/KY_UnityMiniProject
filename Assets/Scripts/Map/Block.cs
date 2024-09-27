@@ -12,6 +12,9 @@ public class Block : PoolAble
     [SerializeField]
     public float heightOffset;
 
+    [SerializeField]
+    GameObject RightObjectParent;
+
     private void Awake() {
         
         carL = new List<Car>(16);
@@ -24,35 +27,67 @@ public class Block : PoolAble
     /// <summary>
     /// 블록 생성시의 초기세팅(장애물 등의 배치)
     /// </summary>
-    public virtual void SettingBlock(CarSpawnPosSO _spawnInfo) {
+    public virtual void SettingBlock(CarSpawnPosSO _spawnInfo, bool _is3DBlock) {
 
         int lines = _spawnInfo.LineCount;
         int cars = _spawnInfo.CarCount;
 
+        if (_is3DBlock) {
 
-        for (int i = -(lines - 1); i <= lines - 1; i += 2) {
+            for (int i = -(lines - 1); i <= lines - 1; i += 2) {
 
-            int j = -(cars - 1);
-            int r = Random.Range(0, cars);
-            HashSet<int> set = new HashSet<int>();
+                int j = -(cars - 1);
+                int r = Random.Range(0, cars);
+                HashSet<int> set = new HashSet<int>();
 
-            while (set.Count < r) {
-                set.Add(Random.Range(0, cars));
+                while (set.Count < r) {
+                    set.Add(Random.Range(0, cars));
+                }
+
+
+                foreach (int val in set) {
+
+                    Car c = poolManager.GetObj<Car>(Random.Range(0, 2) == 0 ? "Car" : "Truck");
+                    c.transform.SetPositionAndRotation(transform.position + new Vector3((j + 2 * val) * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
+                    c.transform.SetParent(transform);
+                    carL.Add(c);
+
+                }
+
             }
 
+        } else {
 
-            foreach (int val in set) { 
-            
-                Car c = poolManager.GetObj<Car>(Random.Range(0, 2) == 0 ? "Car" : "Truck");
-                c.transform.SetPositionAndRotation(transform.position + new Vector3((j + 2 * val) * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
-                c.transform.SetParent(transform);
-                carL.Add(c);
+            for (int i = -(lines - 1); i <= lines - 1; i += 2) {
+
+                int j = -(cars - 1);
+
+                int r = Random.Range(0, 2);
+
+                if (r == 0) { 
+                
+                    for (int k = 0; k < cars; k++) {
+
+                        Car c = poolManager.GetObj<Car>(Random.Range(0, 2) == 0 ? "Car" : "Truck");
+                        c.transform.SetPositionAndRotation(transform.position + new Vector3((j + 2 * k) * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
+                        c.transform.SetParent(transform);
+                        carL.Add(c);
+
+                    }
+
+
+                }
 
             }
-
-
 
         }
+
+    }
+
+
+    public void SetRightObjectVisivle(bool _isVisible = true) { 
+    
+        RightObjectParent.SetActive(_isVisible);
 
     }
 
