@@ -19,6 +19,9 @@ MonoBehaviour:
   - prefab: {fileID: 7326143180354350449, guid: 6347ac53f99826744965ea95849ff7de, type: 3}
     startPoolCount: 10
     exInfo: Truck
+  - prefab: {fileID: 6701083663462086291, guid: 89db1f6b9a1498b43b0d4db503153c05, type: 3}
+    startPoolCount: 5
+    exInfo: Airplane
   - prefab: {fileID: 1090472716506374758, guid: 689bc64522cfda84f9e92f8f15724d94, type: 3}
     startPoolCount: 10
     exInfo: 
