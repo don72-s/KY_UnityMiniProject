@@ -24,6 +24,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     float jumpPower;
 
+
     private void Awake() {
         
         rigid = GetComponent<Rigidbody>();
@@ -36,15 +37,9 @@ public class Character : MonoBehaviour
 
         curLane = (MAX_LANE + 1) / 2;
         centerOffset = curLane;
-       
+        //rigid.constraints = RigidbodyConstraints.FreezeAll;
     }
 
-
-    private void FixedUpdate() {
-        
-        rigid.AddForce(Physics.gravity * gravityMultiplier, ForceMode.Acceleration);
-
-    }
 
     // Update is called once per frame
     void Update()
@@ -68,14 +63,32 @@ public class Character : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+            rigid.velocity = Vector3.up * jumpPower *gravityMultiplier;
         }
 
         transform.position = Vector3.Lerp(transform.position,
                                           new Vector3(destPosX, transform.position.y, transform.position.z),
-                                          laneChangeSpeed * Time.deltaTime);
+                                          laneChangeSpeed * Time.deltaTime / Time.timeScale);
 
 
     }
+
+
+    Vector3 offsetVec = Vector3.zero;
+    public void SetGravityVec(Vector3 _vec) {
+
+        offsetVec = _vec;
+
+    }
+
+    private void FixedUpdate() {
+
+        rigid.AddForce(Vector3.down * s, ForceMode.Acceleration);
+
+        rigid.AddForce(offsetVec, ForceMode.Acceleration);
+
+    }
+
+    public float s;
 
 }

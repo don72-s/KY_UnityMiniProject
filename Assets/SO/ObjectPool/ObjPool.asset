@@ -28,3 +28,6 @@ MonoBehaviour:
   - prefab: {fileID: 5843359532535122548, guid: 75dbe6d808bfef94ab9e96294357eb22, type: 3}
     startPoolCount: 2
     exInfo: Down
+  - prefab: {fileID: 1580647574589839144, guid: fe6af92c26806d848b8b534a2c00e9d1, type: 3}
+    startPoolCount: 1
+    exInfo: 

@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,9 @@ public class GameManager : MonoBehaviour
 
     WaitForSecondsRealtime waitSpeedUpDelay;
     Coroutine speedControlCoroutine;
+
+    [SerializeField]
+    CinemachineVirtualCamera vCam;
 
     private void Awake() {
 
@@ -45,7 +49,11 @@ public class GameManager : MonoBehaviour
 
         speedControlCoroutine = StartCoroutine(SpeedControlCoroutine());
 
+        vCam.m_Lens.OrthographicSize = 20;
+        Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time = 0.2f;
+
     }
+
 
     private void OnEnable() {
 
@@ -65,10 +73,17 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void ChangeViewMode() {
+
+        vCam.Priority = vCam.Priority == 0 ? 90 : 0;
+        Camera.main.orthographic = !Camera.main.orthographic;
+
+    }
+
     public void GameOver() {
 
-        StopCoroutine(speedControlCoroutine);
-        Time.timeScale = 0;
+        //StopCoroutine(speedControlCoroutine);
+        //Time.timeScale = 0;
 
     }
 

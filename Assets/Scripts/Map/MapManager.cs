@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
@@ -27,6 +28,14 @@ public class MapManager : MonoBehaviour {
     Vector3 EndPos = Vector3.zero;
     Transform slideBlock;
 
+    Character character;
+
+    private void Awake() {
+
+        character = GameObject.FindWithTag("Player").GetComponent<Character>();
+        
+    }
+
     //초기 블록 생성.
     private void Start() {
 
@@ -48,29 +57,38 @@ public class MapManager : MonoBehaviour {
 
     }
 
-
-
-    #region 생성 테스트용 디버그 코드
-
     private void FixedUpdate() {
 
         foreach (var block in mapBlocks) {
 
-            block.transform.Translate(10 * Time.fixedDeltaTime * Vector3.back, Space.World);
+            block.transform.Translate(30 * Time.deltaTime * Vector3.back, Space.World);
 
         }
 
     }
 
+    bool is3DMode = true;
+    int createCnt = 0;
 
+    IEnumerator ChangeCountCoroutine() {
 
+        Debug.Log("3");
+        yield return new WaitForSeconds(0.4f);
+        Debug.Log("2");
+        yield return new WaitForSeconds(0.4f);
+        Debug.Log("1");
+        yield return new WaitForSeconds(0.4f);
+        GameManager.GetInstance().ChangeViewMode();
+
+    }
 
     private void Update() {
+
 
         if (oldestBlock.transform.position.z <= -removeDistance) {
 
             RemoveOldestTile();
-            CreateRandomTile();
+            
             oldestBlock = mapBlocks[0].transform;
             if (mapBlocks[1].GetType() == typeof(SlideBlock)) {
 
@@ -78,11 +96,41 @@ public class MapManager : MonoBehaviour {
                 startPos = EndPos;
                 EndPos = startPos + new Vector3(0, mapBlocks[1].heightOffset, 0);
 
-            } else {
+
+                Vector3 offset = new Vector3(0, 9, 0);
+                character.SetGravityVec(mapBlocks[1].heightOffset > 0 ? offset : -offset);
+
+            } else if (mapBlocks[1].GetType() == typeof(SwapBlock)) {
+
+                Debug.Log("모드 전환!!");
+                is3DMode = !is3DMode;
+                StartCoroutine(ChangeCountCoroutine());
+
                 startPos = EndPos;
                 maps.position = startPos;
+                character.SetGravityVec(Vector3.zero);
+
+            } else {
+
+                startPos = EndPos;
+                maps.position = startPos;
+                character.SetGravityVec(Vector3.zero);
 
             }
+
+            if (createCnt < 5) {
+
+                CreateRandomTile();
+                createCnt++;
+
+            } else {
+
+                CreateSwapTile();
+                CreateEmptyFlatTile();
+                createCnt = 0;
+
+            }
+
         }
 
         if (startPos != EndPos) {
@@ -95,7 +143,6 @@ public class MapManager : MonoBehaviour {
 
     }
 
-    #endregion
 
     public Block CreateEmptyFlatTile() {
 
@@ -108,6 +155,12 @@ public class MapManager : MonoBehaviour {
 
         Block block = CreateEmptyFlatTile();
         SetupObstacle(block);
+
+    }
+    public void CreateSwapTile() { 
+    
+        Block block = poolManager.GetObj<SwapBlock>();
+        CreateTile(block);
 
     }
     void CreateTile(Block _block) {
@@ -133,6 +186,7 @@ public class MapManager : MonoBehaviour {
         _block.SettingBlock(spawnInfoSO);
 
     }
+
 
 
     /// <summary>
