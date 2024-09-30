@@ -66,13 +66,24 @@ public class Block : PoolAble
                 
                     int carType = Random.Range(0, 2);
 
-                    for (int k = 0; k < cars; k++) {
+                    if (carType == 0) {
 
-                        Car c = poolManager.GetObj<Car>(carType == 0 ? "Airplane" : "Truck");
-                        c.transform.SetPositionAndRotation(transform.position + new Vector3((j + 2 * k) * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
+                        Car c = poolManager.GetObj<Car>("Airplane");
+                        c.transform.SetPositionAndRotation(transform.position + new Vector3((j + 2) * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
                         c.transform.SetParent(transform);
                         carL.Add(c);
 
+                    } else { 
+                    
+                        for (int k = 0; k < cars; k++) {
+
+                            Car c = poolManager.GetObj<Car>(carType == 0 ? "Airplane" : "Truck");
+                            c.transform.SetPositionAndRotation(transform.position + new Vector3((j + 2 * k) * _spawnInfo.HorizontalOffset, c.yOffset, i * _spawnInfo.VerticalOffset), Quaternion.identity);
+                            c.transform.SetParent(transform);
+                            carL.Add(c);
+
+                        }
+                    
                     }
 
 
