@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,18 +11,32 @@ public class GameManager : MonoBehaviour
     private static GameManager instance = null;
 
 
+    [Header("Camera")]
     [SerializeField]
-    float speedUpTime;
+    CinemachineVirtualCamera titleCam;
     [SerializeField]
-    float speedUpSize;
+    CinemachineVirtualCamera orthoCam;
     [SerializeField]
-    float maxSpeed;
+    CinemachineVirtualCamera quaterCam;
 
-    WaitForSecondsRealtime waitSpeedUpDelay;
-    Coroutine speedControlCoroutine;
-
+    [Header("Objects")]
     [SerializeField]
-    CinemachineVirtualCamera vCam;
+    GameObject arrowObj;
+    [SerializeField]
+    GameObject edgeBlock;
+    [SerializeField]
+    GameObject sideBackground;
+    [SerializeField]
+    GameObject titleUI;
+
+    [Header("SFX")]
+    [SerializeField]
+    AudioClip gameBGM;
+
+    public event Action GameStartEvent;
+
+    public bool isStart { get; private set; }
+    public bool is3DMode { get; private set; }
 
     private void Awake() {
 
@@ -35,6 +50,8 @@ public class GameManager : MonoBehaviour
 
         }
 
+        isStart = false;
+
     }
 
     public static GameManager GetInstance() {
@@ -45,56 +62,79 @@ public class GameManager : MonoBehaviour
 
     private void Start() {
 
-        waitSpeedUpDelay = new WaitForSecondsRealtime(speedUpTime);
-
-        speedControlCoroutine = StartCoroutine(SpeedControlCoroutine());
-
-        vCam.m_Lens.OrthographicSize = 8;
+        orthoCam.m_Lens.OrthographicSize = 8;
         Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.m_Time = 0.2f;
 
-    }
-
-
-    private void OnEnable() {
-
-        SceneManager.sceneLoaded += InitFunction;
+        is3DMode = true;
+        arrowObj.SetActive(false);
 
     }
 
-    private void OnDisable() {
 
-        SceneManager.sceneLoaded -= InitFunction;
+    private void Update() {
+
+        if (!isStart && Input.GetKeyDown(KeyCode.Space)) {
+
+            StartCoroutine(TitleCoroutine());
+
+        }
+            
+    }
+
+    IEnumerator TitleCoroutine() {
+
+        titleUI.SetActive(false);
+        titleCam.Priority = 0;
+        yield return new WaitForSeconds(2.5f);
+        GameStart();
 
     }
 
-    void InitFunction(Scene _scene, LoadSceneMode _mode) {
+    public void GameStart() {
 
-        Time.timeScale = 1;
-
+        GameStartEvent?.Invoke();
+        arrowObj.SetActive(true);
+        edgeBlock.SetActive(false);
+        sideBackground.SetActive(true);
+        isStart = true;
+        AudioPlayer.GetInstance().PlayBGM(gameBGM, 0.1f);
+        
     }
 
     public void ChangeViewMode() {
 
-        vCam.Priority = vCam.Priority == 0 ? 90 : 0;
+        if (is3DMode) {
+
+            if (UnityEngine.Random.Range(0, 2) == 0) {
+
+                orthoCam.Priority = 90;
+
+            } else {
+
+                quaterCam.Priority = 90;
+
+            }
+
+            arrowObj.SetActive(false);
+
+        } else {
+
+            orthoCam.Priority = quaterCam.Priority = 0;
+            arrowObj.SetActive(true);
+
+        }
+
         Camera.main.orthographic = !Camera.main.orthographic;
+        is3DMode = !is3DMode;
 
     }
+
 
     public void GameOver() {
 
-        //StopCoroutine(speedControlCoroutine);
-        //Time.timeScale = 0;
+        //todo : 게임 오버시 처리
 
     }
 
-    IEnumerator SpeedControlCoroutine() {
-
-        while (Time.timeScale < maxSpeed) {
-
-            yield return waitSpeedUpDelay;
-            Time.timeScale = Mathf.Clamp(Time.timeScale + speedUpSize, 1, maxSpeed);
-
-        }
-    }
 
 }

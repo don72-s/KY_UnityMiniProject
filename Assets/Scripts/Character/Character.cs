@@ -71,6 +71,8 @@ public class Character : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+        if (!gameManager.isStart)
+            return;
 
         if (Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0) {
             SceneManager.LoadScene("SampleScene");

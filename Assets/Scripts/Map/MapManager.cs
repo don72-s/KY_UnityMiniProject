@@ -7,6 +7,7 @@ using UnityEngine;
 public class MapManager : MonoBehaviour {
 
     PoolManager poolManager;
+    AudioPlayer audioPlayer;
 
     [SerializeField]
     Transform maps;
@@ -33,7 +34,8 @@ public class MapManager : MonoBehaviour {
     private void Awake() {
 
         character = GameObject.FindWithTag("Player").GetComponent<Character>();
-        
+        audioPlayer = AudioPlayer.GetInstance();
+
     }
 
     //초기 블록 생성.
@@ -46,13 +48,18 @@ public class MapManager : MonoBehaviour {
         CreateEmptyFlatTile();
         CreateEmptyFlatTile();
 
-        while (mapBlocks.Count < maxBlockCnt) { 
-        
-            CreateRandomTile();
+        while (mapBlocks.Count < maxBlockCnt) {
+
+            //CreateRandomTile();
+            CreateTile();
 
         }
 
         curSpeed = speed;
+
+        character.characterDamaged += () => { pauseFlag = 0; };
+        character.characterRecovered += () => { pauseFlag = 1; };
+        GameManager.GetInstance().GameStartEvent += () => { pauseFlag = 1; };
 
     }
 
@@ -60,7 +67,7 @@ public class MapManager : MonoBehaviour {
 
         foreach (var block in mapBlocks) {
 
-            block.transform.Translate(curSpeed * Time.deltaTime * Vector3.back, Space.World);
+            block.transform.Translate(pauseFlag * curSpeed * Time.deltaTime * Vector3.back, Space.World);
 
         }
 
@@ -68,28 +75,40 @@ public class MapManager : MonoBehaviour {
 
     bool is3DMode = true;
     int createCnt = 0;
-    int maxCreateCnt = 10;
+    int curModeTileCreateCnt = 7;
     bool isMaking3DBlock = true;
     int maxBlockCnt = 15;
 
     [SerializeField]
     int speed = 30;
     int curSpeed;
+    int pauseFlag = 0;
 
+    [Header("SFX")]
+    [SerializeField]
+    AudioClip coundDownSndClip;
+
+
+    WaitForSeconds ret = new WaitForSeconds(0.4f);
     IEnumerator ChangeCountCoroutine() {
-
-        Debug.Log("3");
-        yield return new WaitForSeconds(0.4f);
-        Debug.Log("2");
-        yield return new WaitForSeconds(0.4f);
-        Debug.Log("1");
-        yield return new WaitForSeconds(0.4f);
+        
+        audioPlayer.PlaySFX(coundDownSndClip, 1f);
+        yield return ret;
+        audioPlayer.PlaySFX(coundDownSndClip, 1f);
+        yield return ret;
+        audioPlayer.PlaySFX(coundDownSndClip, 1f);
+        yield return ret;
         GameManager.GetInstance().ChangeViewMode();
 
-        if (is3DMode)
+        if (is3DMode) {
+            speed = Mathf.Clamp(speed + 5, 0, 50);
             curSpeed = speed;
-        else
-            curSpeed = 18;
+            ret = new WaitForSeconds(0.4f - (curSpeed - 30) / 5 * 0.04f);
+            Debug.Log(0.4f - (curSpeed - 30) / 5 * 0.04f);
+        } else { 
+            curSpeed = 18 + (curSpeed - 30) / 5 * 3;
+        }
+
 
         foreach (var block in mapBlocks) {
 
@@ -119,7 +138,6 @@ public class MapManager : MonoBehaviour {
 
             } else if (mapBlocks[1].GetType() == typeof(SwapBlock)) {
 
-                Debug.Log("모드 전환!!");
                 is3DMode = !is3DMode;
                 StartCoroutine(ChangeCountCoroutine());
 
@@ -141,20 +159,7 @@ public class MapManager : MonoBehaviour {
             }
 
 
-            if (createCnt < maxCreateCnt) {
-
-                CreateRandomTile();
-                createCnt++;
-
-            } else {
-
-                CreateSwapTile();
-                CreateEmptyFlatTile();
-                createCnt = 0;
-                maxCreateCnt = isMaking3DBlock ? 4 : 7;
-                isMaking3DBlock = !isMaking3DBlock;
-
-            }
+            CreateTile();
 
         }
 
@@ -169,17 +174,30 @@ public class MapManager : MonoBehaviour {
     }
 
 
+    public void CreateTile() {
+
+        if (createCnt < curModeTileCreateCnt) {
+
+            CreateRandomTile();
+            createCnt++;
+
+        } else {
+
+            CreateSwapTile();
+            CreateEmptyFlatTile();
+            createCnt = 0;
+            curModeTileCreateCnt = isMaking3DBlock ? 4 : 7;//모드별 생성 타일 수
+            isMaking3DBlock = !isMaking3DBlock;
+
+        }
+
+    }
+
     public Block CreateEmptyFlatTile() {
 
         Block block = poolManager.GetObj<Block>();
         CreateTile(block);
         return block;
-
-    }
-    public void CreateFlatTile() {
-
-        Block block = CreateEmptyFlatTile();
-        SetupObstacle(block);
 
     }
     public void CreateSwapTile() { 
@@ -208,12 +226,6 @@ public class MapManager : MonoBehaviour {
         _block.SetRightObjectVisivle();
 
     }
-    void SetupObstacle(Block _block) { 
-    
-        _block.SettingBlock(spawnInfoSO, isMaking3DBlock);
-
-    }
-
 
 
     /// <summary>
@@ -229,7 +241,7 @@ public class MapManager : MonoBehaviour {
         else if (v == 2) block = poolManager.GetObj<SlideBlock>("Down");
 
         CreateTile(block);
-        SetupObstacle(block);
+        block.SettingBlock(spawnInfoSO, isMaking3DBlock);
 
     }
 
