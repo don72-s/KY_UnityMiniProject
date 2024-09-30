@@ -90,5 +90,12 @@ public class Character : MonoBehaviour
     }
 
     public float s;
+    public void OnDamaged() {
+        characterDamaged?.Invoke();
+    }
+    public void OnRecovered() {
+        characterRecovered?.Invoke();
+
+    }
 
 }

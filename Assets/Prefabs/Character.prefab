@@ -81,7 +81,8 @@ MonoBehaviour:
   laneChangeSpeed: 20
   gravityMultiplier: 2
   jumpPower: 10
-  s: 90
+  move_jumpSFX: {fileID: 8300000, guid: 478ce2609bb70c546a34491cfb80b2cf, type: 3}
+  animator: {fileID: 1495622566}
 --- !u!1001 &1050221668
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -151,15 +152,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5017971254852617305, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -0.00000033608194
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5017971254852617305, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -8.333307
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5017971254852617305, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 43.148148
+      value: -16.39473
       objectReference: {fileID: 0}
     - target: {fileID: 445712794880070669, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -179,7 +180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1492312403021943278, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -14.891552
+      value: 69.48362
       objectReference: {fileID: 0}
     - target: {fileID: 1492312403021943278, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -191,7 +192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1812433027226884373, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -1.7027683
+      value: 0.25977764
       objectReference: {fileID: 0}
     - target: {fileID: 1812433027226884373, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -211,19 +212,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7604367576434143486, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 14.891573
+      value: -48.237797
       objectReference: {fileID: 0}
     - target: {fileID: 8891244130364874969, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0.00000011809084
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8891244130364874969, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -8.333309
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8891244130364874969, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -43.14815
+      value: 16.394762
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd16370009b8b324795e2c47c7cdcfef, type: 3}
