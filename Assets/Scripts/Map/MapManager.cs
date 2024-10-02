@@ -26,7 +26,7 @@ public class MapManager : MonoBehaviour {
     Transform oldestBlock;
 
     Vector3 startPos;
-    Vector3 EndPos = Vector3.zero;
+    Vector3 endPos = Vector3.zero;
     Transform slideBlock;
 
     Character character;
@@ -50,16 +50,17 @@ public class MapManager : MonoBehaviour {
 
         while (mapBlocks.Count < maxBlockCnt) {
 
-            //CreateRandomTile();
             CreateTile();
 
         }
 
-        curSpeed = speed;
+        curSpeed = speed = startSpeed;
 
         character.characterDamaged += () => { pauseFlag = 0; };
         character.characterRecovered += () => { pauseFlag = 1; };
         GameManager.GetInstance().GameStartEvent += () => { pauseFlag = 1; };
+        GameManager.GetInstance().GameResetEvent += ResetGame;
+
 
     }
 
@@ -80,7 +81,8 @@ public class MapManager : MonoBehaviour {
     int maxBlockCnt = 15;
 
     [SerializeField]
-    int speed = 30;
+    int startSpeed;
+    int speed;
     int curSpeed;
     int pauseFlag = 0;
 
@@ -129,8 +131,8 @@ public class MapManager : MonoBehaviour {
             if (mapBlocks[1].GetType() == typeof(SlideBlock)) {
 
                 slideBlock = mapBlocks[1].transform;
-                startPos = EndPos;
-                EndPos = startPos + new Vector3(0, mapBlocks[1].heightOffset, 0);
+                startPos = endPos;
+                endPos = startPos + new Vector3(0, mapBlocks[1].heightOffset, 0);
 
 
                 Vector3 offset = new Vector3(0, 9, 0);
@@ -141,13 +143,13 @@ public class MapManager : MonoBehaviour {
                 is3DMode = !is3DMode;
                 StartCoroutine(ChangeCountCoroutine());
 
-                startPos = EndPos;
+                startPos = endPos;
                 maps.position = startPos;
                 character.SetGravityVec(Vector3.zero);
 
             } else {
 
-                startPos = EndPos;
+                startPos = endPos;
                 maps.position = startPos;
                 character.SetGravityVec(Vector3.zero);
 
@@ -163,10 +165,10 @@ public class MapManager : MonoBehaviour {
 
         }
 
-        if (startPos != EndPos) {
+        if (startPos != endPos) {
 
             float val = (-slideBlock.position.z + (blockLength) / 2) / blockLength;
-            maps.position = Vector3.LerpUnclamped(startPos, EndPos, val);
+            maps.position = Vector3.LerpUnclamped(startPos, endPos, val);
 
         }
 
@@ -174,7 +176,7 @@ public class MapManager : MonoBehaviour {
     }
 
 
-    public void CreateTile() {
+    void CreateTile() {
 
         if (createCnt < curModeTileCreateCnt) {
 
@@ -193,14 +195,51 @@ public class MapManager : MonoBehaviour {
 
     }
 
-    public Block CreateEmptyFlatTile() {
+    void ResetGame() {
+
+        ClearAllTile();
+        
+        startPos = endPos = maps.position = Vector3.zero;
+
+        isMaking3DBlock = true;
+        is3DMode = true;
+        curModeTileCreateCnt = 7;
+        createCnt = 0;
+
+        CreateEmptyFlatTile();
+        CreateEmptyFlatTile();
+
+        while (mapBlocks.Count < maxBlockCnt) {
+
+            CreateTile();
+
+        }
+
+        curSpeed = speed = startSpeed;
+        ret = new WaitForSeconds(0.4f);
+
+
+    }
+
+    void ClearAllTile() {
+
+        foreach (Block _block in mapBlocks) {
+
+            _block.RemoveBlock();
+
+        }
+        mapBlocks.Clear();
+
+    }
+
+    Block CreateEmptyFlatTile() {
 
         Block block = poolManager.GetObj<Block>();
         CreateTile(block);
         return block;
 
     }
-    public void CreateSwapTile() { 
+    void CreateSwapTile() { 
     
         Block block = poolManager.GetObj<SwapBlock>();
         CreateTile(block);
@@ -231,7 +270,7 @@ public class MapManager : MonoBehaviour {
     /// <summary>
     /// 가장 뒤에 랜덤으로 블록 하나 추가.
     /// </summary>
-    public void CreateRandomTile() {
+    void CreateRandomTile() {
 
         int v = UnityEngine.Random.Range(0, 3);
         Block block = null;
@@ -248,7 +287,7 @@ public class MapManager : MonoBehaviour {
     /// <summary>
     /// 가장 오래된 타일 제거
     /// </summary>
-    public void RemoveOldestTile() {
+    void RemoveOldestTile() {
 
         Block blockObj = mapBlocks[0];
         mapBlocks.RemoveAt(0);

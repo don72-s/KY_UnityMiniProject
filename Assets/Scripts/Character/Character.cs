@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Character : MonoBehaviour {
 
-    public enum State { RUN, JUMP, STUN}
+    public enum State { IDLE, RUN, JUMP, STUN}
 
     State curState = State.RUN;
 
@@ -65,6 +65,7 @@ public class Character : MonoBehaviour {
         gameManager = GameManager.GetInstance();
 
         gameManager.GameStartEvent += () => { ChangeState(State.RUN); };
+        gameManager.GameResetEvent += ResetGame;
 
         curLane = (MAX_LANE + 1) / 2;
         centerOffset = curLane;
@@ -75,12 +76,9 @@ public class Character : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        if (!gameManager.isStart)
+        if (!gameManager.IsPlaying())
             return;
 
-        if (Input.GetKeyDown(KeyCode.R) && Time.timeScale == 0) {
-            SceneManager.LoadScene("SampleScene");
-        }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
 
@@ -98,6 +96,10 @@ public class Character : MonoBehaviour {
     public void ChangeState(State _destState) {
 
         switch (_destState) {
+
+            case State.IDLE:
+                animator.Play("idle");
+                break;
 
             case State.RUN:
                 animator.Play("sprint");
@@ -175,12 +177,23 @@ public class Character : MonoBehaviour {
     public void OnRecovered() {
 
         if (heartModel.Health <= 0) {
-            Debug.Log("게임오버");
+            gameManager.GameOver();
             return;
         }
 
         ChangeState(State.RUN);
         characterRecovered?.Invoke();
+
+    }
+
+    void ResetGame() {
+
+        moveDir = 1;
+        curLane = (MAX_LANE + 1) / 2;
+        centerOffset = curLane;
+        transform.position = Vector3.zero;
+        destPosX = (curLane - centerOffset) * laneDistance;
+        arrowObj.transform.rotation = Quaternion.Euler(0, moveDir * 90, 0);
 
     }
 

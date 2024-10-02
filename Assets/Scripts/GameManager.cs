@@ -8,8 +8,11 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
 
-    private static GameManager instance = null;
+    enum GameState { TITLE, GET_READY, PLAYING, GAME_OVER}
 
+    static GameManager instance = null;
+
+    GameState curState;
 
     [Header("Camera")]
     [SerializeField]
@@ -40,8 +43,8 @@ public class GameManager : MonoBehaviour
     HeartModel heartModel;
 
     public event Action GameStartEvent;
+    public event Action GameResetEvent;
 
-    public bool isStart { get; private set; }
     public bool is3DMode { get; private set; }
 
     private void Awake() {
@@ -56,7 +59,6 @@ public class GameManager : MonoBehaviour
 
         }
 
-        isStart = false;
 
     }
 
@@ -74,17 +76,39 @@ public class GameManager : MonoBehaviour
         is3DMode = true;
         arrowObj.SetActive(false);
 
+        curState = GameState.TITLE;
     }
 
 
     private void Update() {
 
-        if (!isStart && Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space)) {
 
-            StartCoroutine(TitleCoroutine());
+            if (curState == GameState.TITLE) {
+
+                StartCoroutine(TitleCoroutine());
+                curState = GameState.PLAYING;
+
+            } else if (curState == GameState.GAME_OVER) {
+
+                GetReady();
+                curState = GameState.GET_READY;
+
+            } else if (curState == GameState.GET_READY) {
+
+                GameStart();
+                curState = GameState.PLAYING;
+
+            }
 
         }
             
+    }
+
+    public bool IsPlaying() { 
+    
+        return curState == GameState.PLAYING;
+
     }
 
     IEnumerator TitleCoroutine() {
@@ -93,6 +117,7 @@ public class GameManager : MonoBehaviour
         titleCam.Priority = 0;
         yield return new WaitForSeconds(2.5f);
         GameStart();
+        AudioPlayer.GetInstance().PlayBGM(gameBGM, 0.1f);
 
     }
 
@@ -103,9 +128,29 @@ public class GameManager : MonoBehaviour
         edgeBlock.SetActive(false);
         sideBackground.SetActive(true);
         healthUI.SetActive(true);
-        isStart = true;
-        AudioPlayer.GetInstance().PlayBGM(gameBGM, 0.1f);
         
+    }
+
+    //today todo : 여기 작성하기.
+    public void GetReady() {
+
+        if(!is3DMode)
+            ChangeViewMode();
+
+        arrowObj.SetActive(false);
+        edgeBlock.SetActive(true);
+
+
+        //체력 채우기
+        heartModel.Health = heartModel.MaxHealth;
+        
+        //상태 바꾸기
+        //todo : 화살표 방향 초기화
+        GameObject.FindWithTag("Player").GetComponent<Character>().ChangeState(Character.State.IDLE);
+        
+        //속도 기존속도로 바꾸기
+        GameResetEvent?.Invoke();
+
     }
 
     public void ChangeViewMode() {
@@ -137,11 +182,10 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void GameOver() {
-
-        //todo : 게임 오버시 처리
+    public void GameOver() { 
+    
+        curState = GameState.GAME_OVER;
 
     }
-
 
 }

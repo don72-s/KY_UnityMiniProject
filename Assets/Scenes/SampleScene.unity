@@ -1557,7 +1557,7 @@ MonoBehaviour:
   blockLength: 30
   blockParent: {fileID: 507816925}
   spawnInfoSO: {fileID: 11400000, guid: 179e0374921fb8b43a24aabce50fea96, type: 2}
-  speed: 30
+  startSpeed: 30
   coundDownSndClip: {fileID: 8300000, guid: 7e4451aca39285c4d91f34585de2ea37, type: 3}
 --- !u!4 &1015324812
 Transform:
