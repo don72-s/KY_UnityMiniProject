@@ -1,13 +1,22 @@
+using UnityEngine;
+
 public class SwapBlock : Block {
 
-    GameManager gameManager;
+    //GameManager gameManager;
 
-    // Start is called before the first frame update
-    void Start() {
+    [SerializeField]
+    GameObject heartItemObject;
 
-        gameManager = GameManager.GetInstance();
+    private void OnEnable() {
+
+        heartItemObject.SetActive(true);
 
     }
 
-    
+    private void OnDisable() {
+
+        heartItemObject.SetActive(false);
+
+    }
+
 }

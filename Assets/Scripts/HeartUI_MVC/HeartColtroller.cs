@@ -6,10 +6,6 @@ using UnityEngine.UI;
 public class HeartColtroller : MonoBehaviour {
 
     [SerializeField]
-    Sprite emptyHeart;
-    [SerializeField]
-    Sprite fullHeart;
-    [SerializeField]
     Image heratBaseImg;
 
     [SerializeField]
@@ -25,11 +21,10 @@ public class HeartColtroller : MonoBehaviour {
 
         heartList = new List<Image>();
 
-        for (int i = 0; i < heartModel.MaxHealth; i++) {
+        for (int i = 0; i < heartModel.MaxHealth; i += heartModel.OneHeartAmount) {
 
             Image tmp = Instantiate(heratBaseImg);
             tmp.transform.SetParent(heartParentTransform);
-            tmp.sprite = fullHeart;
             heartList.Add(tmp);
             tmp.transform.localScale = Vector3.one;
 
@@ -43,17 +38,29 @@ public class HeartColtroller : MonoBehaviour {
 
     public void OnHpChanged(int _changedHp) {
 
-        foreach (Image heart in heartList) {
+        foreach (Image tmp in heartList)
+            tmp.fillAmount = 0;
 
-            heart.sprite = emptyHeart;
+        int idx = 0;
+
+        while (_changedHp > 0) {
+
+            if (_changedHp >= heartModel.OneHeartAmount) {
+                heartList[idx].fillAmount = 1;
+                _changedHp -= heartModel.OneHeartAmount;
+                idx++;
+            } else {
+                heartList[idx].fillAmount = _changedHp / (float)heartModel.OneHeartAmount;
+                _changedHp = 0;
+            }
 
         }
 
-        for (int i = 0; i < _changedHp; i++) { 
-        
-            heartList[i].sprite = fullHeart;
+    }
 
-        }
+    public void HealHp(int _healAmount) {
+
+        heartModel.Health = Mathf.Clamp(heartModel.Health + _healAmount, 0, heartModel.MaxHealth);
 
     }
 

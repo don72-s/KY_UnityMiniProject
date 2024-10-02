@@ -10,6 +10,8 @@ public class HeartModel : MonoBehaviour
 
     [SerializeField]
     int maxHealth;
+    [SerializeField]
+    int oneHeartAmount;
 
     public event Action<int> hpChangedEvent;
 
@@ -22,15 +24,17 @@ public class HeartModel : MonoBehaviour
     public int Health {
 
         get { return health; }
-        set { health = value; hpChangedEvent?.Invoke(health); }
+        set {health = Mathf.Clamp(value, 0, MaxHealth); hpChangedEvent?.Invoke(health);}
 
     }
 
     public int MaxHealth { get { return maxHealth; } private set { } }
 
+    public int OneHeartAmount { get { return oneHeartAmount; } private set { } }
+
     public void TakeDamage(int _damage) {
 
-        Health = Math.Clamp(Health - _damage, 0, maxHealth);
+        Health = Health - _damage;
 
     }
 

@@ -84,6 +84,8 @@ public class MapManager : MonoBehaviour {
 
     [SerializeField]
     int startSpeed;
+    [SerializeField]
+    int MAX_SPEED;
     int speed;
     int curSpeed;
     int pauseFlag = 0;
@@ -95,7 +97,7 @@ public class MapManager : MonoBehaviour {
 
     WaitForSeconds ret = new WaitForSeconds(0.4f);
     IEnumerator ChangeCountCoroutine() {
-        
+
         audioPlayer.PlaySFX(coundDownSndClip, 1f);
         yield return ret;
         audioPlayer.PlaySFX(coundDownSndClip, 1f);
@@ -105,11 +107,11 @@ public class MapManager : MonoBehaviour {
         GameManager.GetInstance().ChangeViewMode();
 
         if (is3DMode) {
-            speed = Mathf.Clamp(speed + 5, 0, 50);
+            speed = Mathf.Clamp(speed + 5, 0, MAX_SPEED);
             curSpeed = speed;
-            ret = new WaitForSeconds(0.4f - (curSpeed - 30) / 5 * 0.04f);
+            ret = new WaitForSeconds(0.4f - (curSpeed - startSpeed) / 5 * 0.04f);
         } else { 
-            curSpeed = 18 + (curSpeed - 30) / 5 * 3;
+            curSpeed = 18 + (curSpeed - startSpeed) / 5 * 3;
         }
 
 

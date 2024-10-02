@@ -34,6 +34,8 @@ public class Character : MonoBehaviour {
     AudioClip move_jumpSFX;
     [SerializeField]
     AudioClip mistakeSFX;
+    [SerializeField]
+    AudioClip getItemSFX;
 
     GameManager gameManager;
 
@@ -170,7 +172,14 @@ public class Character : MonoBehaviour {
         characterDamaged?.Invoke();
         audioPlayer.PlaySFX(mistakeSFX);
 
-        heartModel.TakeDamage(1);
+        heartModel.TakeDamage(heartModel.OneHeartAmount);
+
+    }
+
+    public void GetHeartItem() {
+
+        audioPlayer.PlaySFX(getItemSFX);
+        heartModel.Health += 1;
 
     }
 
