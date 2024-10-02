@@ -44,6 +44,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     HeartModel heartModel;
 
+    [Header("GameOver UI Animator")]
+    [SerializeField]
+    Animator gameOverAnimator;
+
     public event Action GameStartEvent;
     public event Action GameResetEvent;
 
@@ -89,17 +93,12 @@ public class GameManager : MonoBehaviour
             if (curState == GameState.TITLE) {
 
                 StartCoroutine(TitleCoroutine());
-                curState = GameState.PLAYING;
 
             } else if (curState == GameState.GAME_OVER) {
 
+                gameOverAnimator.Play("countDown");
                 GetReady();
                 curState = GameState.GET_READY;
-
-            } else if (curState == GameState.GET_READY) {
-
-                GameStart();
-                curState = GameState.PLAYING;
 
             }
 
@@ -120,6 +119,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
         GameStart();
         AudioPlayer.GetInstance().PlayBGM(gameBGM, 0.1f);
+        curState = GameState.PLAYING;
 
     }
 
@@ -135,7 +135,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    //today todo : 여기 작성하기.
     public void GetReady() {
 
         if(!is3DMode)
@@ -176,10 +175,17 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void RestartGame() {
+
+        GameStart();
+        curState = GameState.PLAYING;
+
+    }
 
     public void GameOver() { 
     
         curState = GameState.GAME_OVER;
+        gameOverAnimator.Play("appear");
 
     }
 

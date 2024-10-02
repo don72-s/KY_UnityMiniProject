@@ -108,7 +108,6 @@ public class MapManager : MonoBehaviour {
             speed = Mathf.Clamp(speed + 5, 0, 50);
             curSpeed = speed;
             ret = new WaitForSeconds(0.4f - (curSpeed - 30) / 5 * 0.04f);
-            Debug.Log(0.4f - (curSpeed - 30) / 5 * 0.04f);
         } else { 
             curSpeed = 18 + (curSpeed - 30) / 5 * 3;
         }
