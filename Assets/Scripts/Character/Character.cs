@@ -48,6 +48,10 @@ public class Character : MonoBehaviour {
     public event Action characterDamaged;
     public event Action characterRecovered;
 
+    [Header("heart mvc model")]
+    [SerializeField]
+    HeartModel heartModel;
+
     private void Awake() {
 
         rigid = GetComponent<Rigidbody>();
@@ -164,9 +168,16 @@ public class Character : MonoBehaviour {
         characterDamaged?.Invoke();
         audioPlayer.PlaySFX(mistakeSFX);
 
+        heartModel.TakeDamage(1);
+
     }
 
     public void OnRecovered() {
+
+        if (heartModel.Health <= 0) {
+            Debug.Log("게임오버");
+            return;
+        }
 
         ChangeState(State.RUN);
         characterRecovered?.Invoke();

@@ -28,10 +28,16 @@ public class GameManager : MonoBehaviour
     GameObject sideBackground;
     [SerializeField]
     GameObject titleUI;
+    [SerializeField]
+    GameObject healthUI;
 
     [Header("SFX")]
     [SerializeField]
     AudioClip gameBGM;
+
+    [Header("Models")]
+    [SerializeField]
+    HeartModel heartModel;
 
     public event Action GameStartEvent;
 
@@ -96,6 +102,7 @@ public class GameManager : MonoBehaviour
         arrowObj.SetActive(true);
         edgeBlock.SetActive(false);
         sideBackground.SetActive(true);
+        healthUI.SetActive(true);
         isStart = true;
         AudioPlayer.GetInstance().PlayBGM(gameBGM, 0.1f);
         
