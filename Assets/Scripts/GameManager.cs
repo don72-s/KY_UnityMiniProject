@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     GameObject titleUI;
     [SerializeField]
     GameObject healthUI;
+    [SerializeField]
+    GameObject scoreBoardUI;
 
     [Header("SFX")]
     [SerializeField]
@@ -128,7 +130,9 @@ public class GameManager : MonoBehaviour
         edgeBlock.SetActive(false);
         sideBackground.SetActive(true);
         healthUI.SetActive(true);
-        
+        scoreBoardUI.SetActive(true);
+
+
     }
 
     //today todo : 여기 작성하기.

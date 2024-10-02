@@ -8,6 +8,7 @@ public class MapManager : MonoBehaviour {
 
     PoolManager poolManager;
     AudioPlayer audioPlayer;
+    ScoreContoller scoreContoller;
 
     [SerializeField]
     Transform maps;
@@ -35,6 +36,7 @@ public class MapManager : MonoBehaviour {
 
         character = GameObject.FindWithTag("Player").GetComponent<Character>();
         audioPlayer = AudioPlayer.GetInstance();
+        scoreContoller = GetComponent<ScoreContoller>();
 
     }
 
@@ -125,6 +127,7 @@ public class MapManager : MonoBehaviour {
 
         if (oldestBlock.transform.position.z <= -removeDistance) {
 
+            scoreContoller.AddScore();
             RemoveOldestTile();
             
             oldestBlock = mapBlocks[0].transform;
@@ -218,6 +221,7 @@ public class MapManager : MonoBehaviour {
         curSpeed = speed = startSpeed;
         ret = new WaitForSeconds(0.4f);
 
+        scoreContoller.ResetScore();
 
     }
 
