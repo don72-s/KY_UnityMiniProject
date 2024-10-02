@@ -37,6 +37,8 @@ public class HeartColtroller : MonoBehaviour {
 
         heartModel.hpChangedEvent += OnHpChanged;
 
+        GameManager.GetInstance().GameResetEvent += HealAllHp;
+
     }
 
     public void OnHpChanged(int _changedHp) {
@@ -52,6 +54,12 @@ public class HeartColtroller : MonoBehaviour {
             heartList[i].sprite = fullHeart;
 
         }
+
+    }
+
+    public void HealAllHp() {
+
+        heartModel.Health = heartModel.MaxHealth;
 
     }
 

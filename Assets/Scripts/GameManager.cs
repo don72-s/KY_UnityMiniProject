@@ -139,16 +139,7 @@ public class GameManager : MonoBehaviour
 
         arrowObj.SetActive(false);
         edgeBlock.SetActive(true);
-
-
-        //체력 채우기
-        heartModel.Health = heartModel.MaxHealth;
         
-        //상태 바꾸기
-        //todo : 화살표 방향 초기화
-        GameObject.FindWithTag("Player").GetComponent<Character>().ChangeState(Character.State.IDLE);
-        
-        //속도 기존속도로 바꾸기
         GameResetEvent?.Invoke();
 
     }

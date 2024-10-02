@@ -188,6 +188,7 @@ public class Character : MonoBehaviour {
 
     void ResetGame() {
 
+        ChangeState(State.IDLE);
         moveDir = 1;
         curLane = (MAX_LANE + 1) / 2;
         centerOffset = curLane;
