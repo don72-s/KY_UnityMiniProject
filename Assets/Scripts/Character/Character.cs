@@ -157,6 +157,9 @@ public class Character : MonoBehaviour {
 
     public void OnDamaged() {
 
+        if (curState == State.STUN)
+            return;
+
         ChangeState(State.STUN);
         characterDamaged?.Invoke();
         audioPlayer.PlaySFX(mistakeSFX);
